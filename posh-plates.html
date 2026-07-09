@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Posh Plates — Fine Dining, Jalandhar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15100D;
+    --ink-2:#1D1712;
+    --wine:#4A1625;
+    --wine-2:#3A1120;
+    --gold:#C9A227;
+    --gold-light:#E8C978;
+    --parchment:#F0E6D2;
+    --parchment-dim:#C9BFA9;
+    --sage:#8B9A78;
+    --line: rgba(201,162,39,0.22);
+    --shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  body{
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:'Manrope',sans-serif;
+    font-weight:400;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--gold-light);
+    outline-offset:3px;
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 40px;
+    background:linear-gradient(to bottom, rgba(21,16,13,0.92), rgba(21,16,13,0));
+    transition:background .4s ease, padding .4s ease, box-shadow .4s ease;
+  }
+  header.scrolled{
+    background:rgba(21,16,13,0.88);
+    backdrop-filter:blur(10px);
+    padding:14px 40px;
+    box-shadow:0 1px 0 var(--line);
+  }
+  .logo{
+    font-family:'Fraunces',serif;
+    font-size:1.35rem;
+    font-weight:500;
+    letter-spacing:0.02em;
+    display:flex; align-items:center; gap:10px;
+  }
+  .logo svg{width:26px; height:26px; flex-shrink:0;}
+  nav ul{list-style:none; display:flex; gap:38px;}
+  nav a{
+    font-size:0.82rem;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:var(--parchment-dim);
+    position:relative;
+    padding-bottom:4px;
+  }
+  nav a::after{
+    content:'';
+    position:absolute; left:0; bottom:0; width:0; height:1px;
+    background:var(--gold); transition:width .3s ease;
+  }
+  nav a:hover, nav a:hover::after{color:var(--gold-light); width:100%;}
+  .nav-cta{
+    border:1px solid var(--gold);
+    padding:9px 20px;
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    border-radius:2px;
+    transition:background .3s ease, color .3s ease;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{background:var(--gold); color:var(--ink);}
+  .menu-toggle{display:none; background:none; border:0; color:var(--parchment); font-size:1.6rem; cursor:pointer;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    padding:140px 40px 80px;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(74,22,37,0.55), transparent 60%),
+      linear-gradient(180deg, var(--ink) 0%, var(--ink-2) 100%);
+    overflow:hidden;
+    text-align:center;
+  }
+  .hero::before{
+    content:'';
+    position:absolute; inset:0;
+    background-image:url('https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1800&auto=format&fit=crop');
+    background-size:cover; background-position:center;
+    opacity:0.16;
+    mix-blend-mode:luminosity;
+  }
+  .hero-inner{position:relative; z-index:2; max-width:780px;}
+  .hero-plate{
+    width:180px; height:180px; margin:0 auto 34px;
+    animation:plateEnter 1.4s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes plateEnter{
+    from{opacity:0; transform:scale(0.7) rotate(-25deg);}
+    to{opacity:1; transform:scale(1) rotate(0deg);}
+  }
+  .eyebrow{
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.28em;
+    color:var(--gold-light);
+    margin-bottom:18px;
+    opacity:0;
+    animation:fadeUp .9s ease .3s forwards;
+  }
+  .hero h1{
+    font-size:clamp(3rem, 8vw, 5.6rem);
+    line-height:0.98;
+    color:var(--parchment);
+    opacity:0;
+    animation:fadeUp 1s ease .45s forwards;
+  }
+  .hero h1 em{color:var(--gold-light); font-style:italic; font-weight:400;}
+  .hero p{
+    margin:26px auto 0;
+    max-width:520px;
+    color:var(--parchment-dim);
+    font-size:1.05rem;
+    opacity:0;
+    animation:fadeUp 1s ease .6s forwards;
+  }
+  .hero-ctas{
+    margin-top:40px;
+    display:flex; gap:18px; justify-content:center; flex-wrap:wrap;
+    opacity:0;
+    animation:fadeUp 1s ease .75s forwards;
+  }
+  @keyframes fadeUp{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);}}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:15px 30px;
+    font-size:0.82rem;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    border-radius:2px;
+    transition:transform .3s ease, background .3s ease, color .3s ease, border-color .3s ease;
+  }
+  .btn-solid{background:var(--gold); color:var(--ink);}
+  .btn-solid:hover{background:var(--gold-light); transform:translateY(-2px);}
+  .btn-outline{border:1px solid var(--parchment-dim); color:var(--parchment);}
+  .btn-outline:hover{border-color:var(--gold-light); color:var(--gold-light); transform:translateY(-2px);}
+
+  .scroll-cue{
+    position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+    font-size:0.68rem; text-transform:uppercase; letter-spacing:0.2em;
+    color:var(--parchment-dim);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    opacity:0; animation:fadeUp 1s ease 1s forwards;
+  }
+  .scroll-cue span{
+    width:1px; height:34px; background:linear-gradient(var(--gold), transparent);
+    animation:scrollLine 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollLine{0%,100%{opacity:0.3;} 50%{opacity:1;}}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:130px 0; position:relative;}
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .9s ease, transform .9s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  .section-head{max-width:640px; margin:0 auto 64px; text-align:center;}
+  .section-eyebrow{
+    font-size:0.76rem; text-transform:uppercase; letter-spacing:0.26em;
+    color:var(--gold); margin-bottom:16px; display:block;
+  }
+  .section-head h2{font-size:clamp(2rem,4.2vw,3rem); color:var(--parchment);}
+  .section-head p{color:var(--parchment-dim); margin-top:18px; font-size:1.02rem;}
+
+  .divider{
+    width:64px; height:1px; background:var(--gold);
+    margin:0 auto; opacity:0.6;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about{
+    display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center;
+  }
+  .about-copy .section-eyebrow{margin-bottom:14px;}
+  .about-copy h2{font-size:clamp(1.9rem,3.6vw,2.7rem); margin-bottom:22px; color:var(--parchment);}
+  .about-copy p{color:var(--parchment-dim); margin-bottom:18px;}
+  .about-figures{display:flex; gap:40px; margin-top:32px;}
+  .fig{border-left:1px solid var(--line); padding-left:16px;}
+  .fig strong{display:block; font-family:'Fraunces',serif; font-size:1.7rem; color:var(--gold-light);}
+  .fig span{font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--parchment-dim);}
+  .about-img{
+    position:relative; border-radius:2px; overflow:hidden;
+    aspect-ratio:4/5; box-shadow:var(--shadow);
+  }
+  .about-img img{width:100%; height:100%; object-fit:cover; filter:saturate(0.9) contrast(1.05);}
+  .about-img::after{
+    content:''; position:absolute; inset:0;
+    border:1px solid var(--gold); margin:14px;
+    pointer-events:none;
+  }
+
+  /* ---------- PRIVATE DINING ---------- */
+  .private{
+    background:linear-gradient(180deg, var(--wine-2), var(--ink-2));
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .private-grid{
+    display:grid; grid-template-columns:0.9fr 1.1fr; gap:0;
+    align-items:stretch;
+    box-shadow:var(--shadow);
+  }
+  .private-img{position:relative; min-height:460px;}
+  .private-img img{width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
+  .private-copy{
+    background:var(--ink);
+    padding:64px;
+    display:flex; flex-direction:column; justify-content:center;
+    border:1px solid var(--line); border-left:none;
+  }
+  .private-copy .section-eyebrow{margin-bottom:16px;}
+  .private-copy h2{font-size:clamp(1.8rem,3.4vw,2.4rem); margin-bottom:20px;}
+  .private-copy p{color:var(--parchment-dim); margin-bottom:26px;}
+  .private-list{list-style:none; margin-bottom:30px;}
+  .private-list li{
+    display:flex; align-items:baseline; gap:12px;
+    padding:12px 0; border-top:1px solid var(--line);
+    font-size:0.95rem; color:var(--parchment);
+  }
+  .private-list li:last-child{border-bottom:1px solid var(--line);}
+  .private-list li::before{content:'—'; color:var(--gold);}
+
+  /* ---------- MENU / TASTING SEQUENCE ---------- */
+  .courses{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);}
+  .course{
+    background:var(--ink); padding:46px 30px;
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    transition:background .4s ease;
+  }
+  .course:hover{background:var(--ink-2);}
+  .course-plate{width:64px; height:64px; margin-bottom:22px;}
+  .course-tag{
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:0.22em;
+    color:var(--gold); margin-bottom:10px;
+  }
+  .course h3{font-size:1.3rem; color:var(--parchment); margin-bottom:12px;}
+  .course p{font-size:0.88rem; color:var(--parchment-dim);}
+  .menu-cta{text-align:center; margin-top:60px;}
+  .menu-cta p{color:var(--parchment-dim); margin-bottom:22px; font-size:0.92rem;}
+
+  /* ---------- VEGAN CALLOUT ---------- */
+  .vegan{
+    display:flex; align-items:center; gap:56px;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:56px;
+  }
+  .vegan-icon{
+    flex-shrink:0; width:110px; height:110px;
+    border:1px solid var(--sage);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .vegan-icon svg{width:52px; height:52px;}
+  .vegan h3{color:var(--parchment); font-size:1.6rem; margin-bottom:12px;}
+  .vegan p{color:var(--parchment-dim);}
+  .vegan-tag{
+    display:inline-block; margin-top:16px;
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:0.16em;
+    color:var(--sage); border:1px solid var(--sage); padding:6px 14px; border-radius:20px;
+  }
+
+  /* ---------- VISIT ---------- */
+  .visit{background:var(--ink-2); border-top:1px solid var(--line);}
+  .visit-grid{display:grid; grid-template-columns:1fr 1fr; gap:70px;}
+  .visit-block h3{
+    font-size:0.78rem; text-transform:uppercase; letter-spacing:0.22em;
+    color:var(--gold); margin-bottom:14px;
+  }
+  .visit-block p, .visit-block a.plain{color:var(--parchment); font-size:1.02rem; margin-bottom:6px;}
+  .visit-block .dim{color:var(--parchment-dim); font-size:0.9rem;}
+  .hours-row{
+    display:flex; justify-content:space-between; padding:11px 0;
+    border-bottom:1px solid var(--line); font-size:0.92rem;
+  }
+  .hours-row span:first-child{color:var(--parchment);}
+  .hours-row span:last-child{color:var(--parchment-dim);}
+  .map-frame{
+    width:100%; height:100%; min-height:340px;
+    border:1px solid var(--line); border-radius:2px; overflow:hidden;
+  }
+  .map-frame iframe{width:100%; height:100%; border:0; filter:grayscale(0.4) invert(0.9) contrast(0.9);}
+
+  .visit-actions{display:flex; gap:16px; margin-top:28px; flex-wrap:wrap;}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:60px 0 34px;
+    border-top:1px solid var(--line);
+    text-align:center;
+  }
+  footer .logo{justify-content:center; margin-bottom:18px;}
+  footer .foot-links{
+    display:flex; gap:28px; justify-content:center; margin-bottom:26px;
+    font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--parchment-dim);
+  }
+  footer .foot-links a:hover{color:var(--gold-light);}
+  footer .credit{font-size:0.75rem; color:var(--parchment-dim); letter-spacing:0.04em;}
+  footer .credit a{color:var(--gold-light);}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:920px){
+    .about{grid-template-columns:1fr;}
+    .private-grid{grid-template-columns:1fr;}
+    .private-img{min-height:280px;}
+    .private-copy{padding:44px 30px; border-left:1px solid var(--line);}
+    .courses{grid-template-columns:1fr 1fr;}
+    .visit-grid{grid-template-columns:1fr;}
+    .vegan{flex-direction:column; text-align:center; padding:40px 28px;}
+  }
+  @media (max-width:680px){
+    header{padding:18px 22px;}
+    nav ul{
+      position:fixed; top:0; right:0; height:100vh; width:76%;
+      background:var(--ink-2); flex-direction:column; justify-content:center;
+      gap:30px; padding:0 40px;
+      transform:translateX(100%); transition:transform .4s ease;
+      border-left:1px solid var(--line);
+    }
+    nav ul.open{transform:translateX(0);}
+    .menu-toggle{display:block;}
+    .nav-cta{display:none;}
+    .wrap{padding:0 22px;}
+    section{padding:90px 0;}
+    .courses{grid-template-columns:1fr;}
+    .about-figures{flex-wrap:wrap; gap:24px;}
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="logo">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="47" stroke="#C9A227" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="30" stroke="#C9A227" stroke-width="1.2"/>
+    </svg>
+    Posh&nbsp;Plates
+  </div>
+  <nav>
+    <ul id="navList">
+      <li><a href="#about">Story</a></li>
+      <li><a href="#dining">Private Dining</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#visit">Visit</a></li>
+    </ul>
+  </nav>
+  <a class="nav-cta" href="tel:+919988006303">Reserve · Call</a>
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <svg class="hero-plate" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="96" stroke="#C9A227" stroke-width="1"/>
+      <circle cx="100" cy="100" r="76" stroke="#E8C978" stroke-width="1"/>
+      <circle cx="100" cy="100" r="4" fill="#C9A227"/>
+      <g stroke="#C9A227" stroke-width="0.6" opacity="0.7">
+        <line x1="100" y1="24" x2="100" y2="4"/>
+        <line x1="100" y1="176" x2="100" y2="196"/>
+        <line x1="24" y1="100" x2="4" y2="100"/>
+        <line x1="176" y1="100" x2="196" y2="100"/>
+      </g>
+    </svg>
+    <span class="eyebrow">Jalandhar · Est. Table for the Discerning</span>
+    <h1>Fine dining, <em>plated</em> with intent.</h1>
+    <p>Posh Plates brings a quiet, considered dining room to Jawahar Nagar — seasonal menus, a private dining room for the moments that matter, and a full vegan table.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-solid" href="https://linktr.ee/" target="_blank" rel="noopener">View the Menu</a>
+      <a class="btn btn-outline" href="tel:+919988006303">Call to Reserve</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><span></span>Scroll</div>
+</section>
+
+<section id="about">
+  <div class="wrap about reveal">
+    <div class="about-copy">
+      <span class="section-eyebrow">The Room</span>
+      <h2>A table set with intention, in the heart of Jalandhar.</h2>
+      <p>Posh Plates was built on a simple idea: a plate should be as considered as the room around it. Every dish leaves the pass with the same quiet precision, whether it's landing at a two-top or the private dining room.</p>
+      <p>We keep the menu tight, the produce seasonal, and the service unhurried — the kind of dinner you plan an evening around.</p>
+      <div class="about-figures">
+        <div class="fig"><strong>2nd Fl.</strong><span>Above West Side</span></div>
+        <div class="fig"><strong>100%</strong><span>Vegan-friendly menu</span></div>
+        <div class="fig"><strong>1</strong><span>Private dining room</span></div>
+      </div>
+    </div>
+    <div class="about-img">
+      <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?q=80&w=1200&auto=format&fit=crop" alt="Elegantly plated dish at Posh Plates" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<section id="dining" class="private">
+  <div class="wrap reveal">
+    <div class="private-grid">
+      <div class="private-img">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200&auto=format&fit=crop" alt="Private dining room interior" loading="lazy">
+      </div>
+      <div class="private-copy">
+        <span class="section-eyebrow">Private Dining Room</span>
+        <h2>For the dinners worth closing the door on.</h2>
+        <p>Anniversaries, closed-door business dinners, family celebrations — our private dining room seats your party away from the main floor, with its own pace and its own menu conversation.</p>
+        <ul class="private-list">
+          <li>Dedicated service through the evening</li>
+          <li>Menu curated with you in advance</li>
+          <li>Suited to intimate groups and celebrations</li>
+        </ul>
+        <a class="btn btn-solid" style="align-self:flex-start;" href="tel:+919988006303">Enquire About the Room</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="menu">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-eyebrow">The Menu</span>
+      <h2>A meal, in sequence.</h2>
+      <p>The full menu — starters through digestif — lives on our Linktree. Here's the shape of an evening at Posh Plates.</p>
+    </div>
+  </div>
+  <div class="courses reveal">
+    <div class="course">
+      <svg class="course-plate" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" stroke="#C9A227" stroke-width="1" fill="none"/><circle cx="50" cy="50" r="32" stroke="#8B7A2E" stroke-width="0.7" fill="none"/></svg>
+      <span class="course-tag">Begin</span>
+      <h3>Starters</h3>
+      <p>Small plates built to share, opening the palate before the main course arrives.</p>
+    </div>
+    <div class="course">
+      <svg class="course-plate" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" stroke="#C9A227" stroke-width="1" fill="none"/><circle cx="50" cy="50" r="32" stroke="#8B7A2E" stroke-width="0.7" fill="none"/></svg>
+      <span class="course-tag">Centre</span>
+      <h3>Mains</h3>
+      <p>Seasonal, generous, and the reason regulars keep a standing table.</p>
+    </div>
+    <div class="course">
+      <svg class="course-plate" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" stroke="#C9A227" stroke-width="1" fill="none"/><circle cx="50" cy="50" r="32" stroke="#8B7A2E" stroke-width="0.7" fill="none"/></svg>
+      <span class="course-tag">Close</span>
+      <h3>Desserts</h3>
+      <p>Kept short and precise — one great dessert beats five middling ones.</p>
+    </div>
+    <div class="course">
+      <svg class="course-plate" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" stroke="#C9A227" stroke-width="1" fill="none"/><circle cx="50" cy="50" r="32" stroke="#8B7A2E" stroke-width="0.7" fill="none"/></svg>
+      <span class="course-tag">Linger</span>
+      <h3>Digestifs</h3>
+      <p>A slow finish to the table — coffee, tea, or something stronger.</p>
+    </div>
+  </div>
+  <div class="wrap menu-cta reveal">
+    <p>Full dishes, pricing, and seasonal changes are kept current on our Linktree.</p>
+    <a class="btn btn-outline" href="https://linktr.ee/" target="_blank" rel="noopener">Open Full Menu ↗</a>
+  </div>
+</section>
+
+<section id="vegan-section">
+  <div class="wrap reveal">
+    <div class="vegan">
+      <div class="vegan-icon">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 15C35 25 25 42 30 60C35 78 50 85 50 85C50 85 65 78 70 60C75 42 65 25 50 15Z" stroke="#8B9A78" stroke-width="1.5"/>
+          <path d="M50 30V80" stroke="#8B9A78" stroke-width="1"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Every course, made vegan.</h3>
+        <p>This isn't a side menu — vegan diners get the same tasting sequence, course for course, with dishes built from the ground up rather than substituted at the last minute.</p>
+        <span class="vegan-tag">Vegan options on every course</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="visit" class="visit">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-eyebrow">Visit</span>
+      <h2>Find the table.</h2>
+    </div>
+    <div class="visit-grid reveal">
+      <div>
+        <div class="visit-block" style="margin-bottom:36px;">
+          <h3>Address</h3>
+          <p>2nd Floor, 503–504, adjoining West Side,<br>New Jawahar Nagar, Jawahar Nagar,<br>Jalandhar, Punjab 144001</p>
+        </div>
+        <div class="visit-block" style="margin-bottom:36px;">
+          <h3>Contact</h3>
+          <a class="plain" href="tel:+919988006303">099880 06303</a>
+        </div>
+        <div class="visit-block">
+          <h3>Hours</h3>
+          <div class="hours-row"><span>Mon – Fri</span><span>11:30 am – 11:00 pm</span></div>
+          <div class="hours-row"><span>Sat – Sun</span><span>11:30 am – 11:30 pm</span></div>
+          <p class="dim" style="margin-top:10px;">Hours may vary on holidays — call ahead to confirm.</p>
+        </div>
+        <div class="visit-actions">
+          <a class="btn btn-solid" href="tel:+919988006303">Call Now</a>
+          <a class="btn btn-outline" href="https://www.google.com/maps/search/?api=1&query=Posh+Plates+New+Jawahar+Nagar+Jalandhar" target="_blank" rel="noopener">Get Directions</a>
+        </div>
+      </div>
+      <div class="map-frame">
+        <iframe
+          src="https://www.google.com/maps?q=2nd+Floor+503-504+adjoining+West+Side+New+Jawahar+Nagar+Jawahar+Nagar+Jalandhar+Punjab+144001&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Posh Plates location map"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="47" stroke="#C9A227" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="30" stroke="#C9A227" stroke-width="1.2"/>
+      </svg>
+      Posh&nbsp;Plates
+    </div>
+    <div class="foot-links">
+      <a href="tel:+919988006303">099880 06303</a>
+      <a href="https://linktr.ee/" target="_blank" rel="noopener">Menu</a>
+      <a href="#visit">Directions</a>
+    </div>
+    <p class="credit">Jawahar Nagar, Jalandhar, Punjab 144001 · Designed by <a href="mailto:rc070722@gmail.com">RC Agency</a></p>
+  </div>
+</footer>
+
+<script>
+  // header scroll state
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // mobile menu toggle
+  const toggle = document.getElementById('menuToggle');
+  const navList = document.getElementById('navList');
+  toggle.addEventListener('click', () => navList.classList.toggle('open'));
+  navList.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navList.classList.remove('open')));
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
